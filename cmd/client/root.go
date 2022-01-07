@@ -117,7 +117,7 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolVar(&rootCmdOpts.Verbose, "verbose", false, "en/disable verbose logging")
 	rootCmd.PersistentFlags().StringVar(&rootCmdOpts.DialMode, "dial-mode", dialMode, "dial mode that determines how we connect to Bhojpur Bank. Valid values are \"host\" or \"kubernetes\" (defaults to BANK_DIAL_MODE env var).")
-	rootCmd.PersistentFlags().StringVar(&rootCmdOpts.Host, "host", bankHost, "[host dial mode] Bhojpur Bank host to talk to (defaults to Bank_HOST env var)")
+	rootCmd.PersistentFlags().StringVar(&rootCmdOpts.Host, "host", bankHost, "[host dial mode] Bhojpur Bank host to talk to (defaults to BANK_HOST env var)")
 	rootCmd.PersistentFlags().StringVar(&rootCmdOpts.Kubeconfig, "kubeconfig", bankKubeconfig, "[kubernetes dial mode] kubeconfig file to use (defaults to KUEBCONFIG env var)")
 	rootCmd.PersistentFlags().StringVar(&rootCmdOpts.K8sNamespace, "k8s-namespace", bankNamespace, "[kubernetes dial mode] Kubernetes namespace in which to look for the Bhojpur Bank pods (defaults to BANK_K8S_NAMESPACE env var, or configured kube context namespace)")
 	// The following are such specific flags that really only matters if one doesn't use the stock helm charts.
