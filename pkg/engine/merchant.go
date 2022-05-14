@@ -1,4 +1,4 @@
-package types
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -21,18 +21,46 @@ package types
 // THE SOFTWARE.
 
 import (
-	"time"
+	"fmt"
+
+	"github.com/bhojpur/bank/pkg/types"
 )
 
-type Cursor struct {
-	After  *string `json:"after"`
-	Before *string `json:"before"`
-	Limit  *int    `json:"limit"`
+// MerchantService handles communication with Bhojpur Bank API
+type MerchantService struct {
+	client *Client
 }
 
-// DateRange holds two dates that represent a range. It is typically
-// used when providing a range when querying the API.
-type DateRange struct {
-	From time.Time
-	To   time.Time
+// Get returns the Merchant details for the current client.
+func (s *MerchantService) Get(id string) (*types.Merchant, *Response, error) {
+	path := fmt.Sprintf("/v1/merchants/%s", id)
+	req, err := s.client.NewAPIRequest("GET", path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var merchant *types.Merchant
+	resp, err := s.client.Do(req, &merchant)
+	if err != nil {
+		return merchant, resp, err
+	}
+
+	return merchant, resp, nil
+}
+
+// MerchantLocation returns an individual Merchant location based on the merchant ID and location ID.
+func (s *MerchantService) MerchantLocation(mID, lID string) (*types.MerchantLocation, *Response, error) {
+	path := fmt.Sprintf("/v1/merchants/%s/locations/%s", mID, lID)
+	req, err := s.client.NewAPIRequest("GET", path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	merLoc := new(types.MerchantLocation)
+	resp, err := s.client.Do(req, merLoc)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return merLoc, resp, err
 }

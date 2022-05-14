@@ -45,7 +45,8 @@ func onlyDigits(key string) string {
 
 type PaymentInvoiceInput struct {
 	AccountID      string                   `json:"account_id"`
-	Amount         int                      `json:"amount"`
+	Currency       string                   `json:"currency"`
+	Amount         float64                  `json:"amount"`
 	ExpirationDate string                   `json:"expiration_date"`
 	LimitDate      string                   `json:"limit_date,omitempty"`
 	InvoiceType    string                   `json:"invoice_type"`
@@ -109,7 +110,8 @@ type PaymentInvoice struct {
 	CreatedAt      string                    `json:"created_at"`
 	RegisteredAt   string                    `json:"registered_at"`
 	SettledAt      string                    `json:"settled_at"`
-	Amount         int                       `json:"amount"`
+	Currency       string                    `json:"currency"`
+	Amount         float64                   `json:"amount"`
 	Barcode        string                    `json:"barcode"`
 	WritableLine   string                    `json:"writable_line"`
 	ExpirationDate string                    `json:"expiration_date"`

@@ -38,12 +38,13 @@ type TargetOrSourceAccount struct {
 type UPIOutBoundOutput struct {
 	ID                       string                `json:"id"`
 	AccountID                string                `json:"account_id"`
-	Amount                   int                   `json:"amount"`
+	Currency                 string                `json:"currency"`
+	Amount                   float64               `json:"amount"`
 	CreatedAt                string                `json:"created_at"`
 	Description              string                `json:"description"`
 	EndToEndID               string                `json:"end_to_end_id"`
-	Fee                      int                   `json:"fee"`
-	RefundedAmount           int                   `json:"refunded_amount"`
+	Fee                      float64               `json:"fee"`
+	RefundedAmount           float64               `json:"refunded_amount"`
 	TransactionID            string                `json:"transaction_id"`
 	Status                   string                `json:"status"` //currently returning: CREATED, FAILED, MONEY_RESERVED, SETTLED, REFUNDED
 	Source                   TargetOrSourceAccount `json:"source"`
@@ -86,7 +87,8 @@ type QRCodeDynamic struct {
 	RequestedForPayer string                 `json:"request_for_payer,omitempty"`
 	Status            string                 `json:"status,omitempty"`
 	TxnID             string                 `json:"transaction_id,omitempty"`
-	Amount            int                    `json:"amount,omitempty"`
+	Currency          string                 `json:"currency"`
+	Amount            float64                `json:"amount,omitempty"`
 	AdditionalData    []QRCodeAdditionalData `json:"additional_data,omitempty"`
 }
 
@@ -97,7 +99,8 @@ type UPIInvoiceOutput struct {
 	Key             string                 `json:"key"`
 	KeyType         string                 `json:"key_type"`
 	TransactionID   string                 `json:"transaction_id"`
-	Amount          int                    `json:"amount"`
+	Currency        string                 `json:"currency"`
+	Amount          float64                `json:"amount"`
 	AdditionalData  []QRCodeAdditionalData `json:"additional_data"`
 	RequestID       string                 `json:"request_id"`
 	CreatedAt       time.Time              `json:"created_at"`
@@ -112,9 +115,10 @@ type UPIInvoiceOutput struct {
 	RequestForPayer string                 `json:"request_for_payer"`
 }
 
-type CreatePedingPaymentInput struct {
+type CreatePendingPaymentInput struct {
 	AccountID     string                 `json:"account_id,omitempty"`
-	Amount        int                    `json:"amount,omitempty"`
+	Currency      string                 `json:"currency"`
+	Amount        float64                `json:"amount,omitempty"`
 	Description   string                 `json:"description,omitempty"`
 	TransactionID string                 `json:"transaction_id,omitempty"`
 	Key           string                 `json:"key,omitempty"`
@@ -123,7 +127,8 @@ type CreatePedingPaymentInput struct {
 type PendingPaymentOutput struct {
 	ID                       string      `json:"id"`
 	AccountID                string      `json:"account_id"`
-	Amount                   int         `json:"amount"`
+	Currency                 string      `json:"currency"`
+	Amount                   float64     `json:"amount"`
 	CreatedAt                time.Time   `json:"created_at"`
 	CreatedBy                string      `json:"created_by"`
 	Description              string      `json:"description"`
@@ -134,7 +139,7 @@ type PendingPaymentOutput struct {
 	FailureReasonCode        interface{} `json:"failure_reason_code"`
 	FailureReasonDescription interface{} `json:"failure_reason_description"`
 	MoneyReservedAt          interface{} `json:"money_reserved_at"`
-	RefundedAmount           int         `json:"refunded_amount"`
+	RefundedAmount           float64     `json:"refunded_amount"`
 	RequestID                string      `json:"request_id"`
 	SettledAt                interface{} `json:"settled_at"`
 	Source                   struct {
@@ -173,9 +178,10 @@ type PendingPaymentOutput struct {
 }
 
 type ConfirmPendingPaymentInput struct {
-	Amount              int    `json:"amount"`
-	Description         string `json:"description"`
-	AddTargetToContacts bool   `json:"add_target_to_contacts"`
+	Currency            string  `json:"currency"`
+	Amount              float64 `json:"amount"`
+	Description         string  `json:"description"`
+	AddTargetToContacts bool    `json:"add_target_to_contacts"`
 }
 
 type QRCodeAdditionalData struct {
@@ -184,7 +190,8 @@ type QRCodeAdditionalData struct {
 }
 
 type CreateDynamicQRCodeInput struct {
-	Amount          int                    `json:"amount,omitempty"`
+	Currency        string                 `json:"currency"`
+	Amount          float64                `json:"amount,omitempty"`
 	AccountID       string                 `json:"account_id"`
 	Key             string                 `json:"key,omitempty"`
 	TransactionID   string                 `json:"transaction_id,omitempty"`
@@ -192,16 +199,12 @@ type CreateDynamicQRCodeInput struct {
 	RequestForPayer string                 `json:"request_for_payer"`
 }
 
-type Customer struct {
-	Name     string `json:"name"`
-	Document string `json:"document"`
-}
-
 type QRCodeStatic struct {
-	Key    string `json:"key,omitempty"`
-	Type   string `json:"phone,omitempty"`
-	TxnID  string `json:"transaction_id,omitempty"`
-	Amount int    `json:"amount,omitempty"`
+	Key      string  `json:"key,omitempty"`
+	Type     string  `json:"phone,omitempty"`
+	TxnID    string  `json:"transaction_id,omitempty"`
+	Currency string  `json:"currency"`
+	Amount   float64 `json:"amount,omitempty"`
 }
 
 type BeneficiaryAccount struct {

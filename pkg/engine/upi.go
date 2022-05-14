@@ -122,8 +122,8 @@ func (s *UpiService) CreateDynamicQRCode(input types.CreateDynamicQRCodeInput, i
 	return &upiInvoiceOutput, resp, err
 }
 
-// CreatePedingPayment is a service used to create a pending payment.
-func (s *UpiService) CreatePedingPayment(input types.CreatePedingPaymentInput, idempotencyKey string) (*types.PendingPaymentOutput, *Response, error) {
+// CreatePedningPayment is a service used to create a pending payment.
+func (s *UpiService) CreatePendingPayment(input types.CreatePendingPaymentInput, idempotencyKey string) (*types.PendingPaymentOutput, *Response, error) {
 	const path = "/v1/upi/outbound_upi_payments"
 
 	req, err := s.client.NewAPIRequest(http.MethodPost, path, input)
@@ -145,8 +145,8 @@ func (s *UpiService) CreatePedingPayment(input types.CreatePedingPaymentInput, i
 	return &pendingPaymentOutput, resp, err
 }
 
-// ConfirmPedingPayment is a service used to confirm a pending payment.
-func (s *UpiService) ConfirmPedingPayment(input types.ConfirmPendingPaymentInput, idempotencyKey, upiID string) (*Response, error) {
+// ConfirmPendingPayment is a service used to confirm a pending payment.
+func (s *UpiService) ConfirmPendingPayment(input types.ConfirmPendingPaymentInput, idempotencyKey, upiID string) (*Response, error) {
 	path := fmt.Sprintf("/v1/upi/outbound_upi_payments/%s/actions/confirm", upiID)
 
 	req, err := s.client.NewAPIRequest(http.MethodPost, path, input)

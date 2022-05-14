@@ -20,19 +20,16 @@ package types
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import (
-	"time"
-)
-
-type Cursor struct {
-	After  *string `json:"after"`
-	Before *string `json:"before"`
-	Limit  *int    `json:"limit"`
-}
-
-// DateRange holds two dates that represent a range. It is typically
-// used when providing a range when querying the API.
-type DateRange struct {
-	From time.Time
-	To   time.Time
+// Customer represents the personal details of a customer
+type Customer struct {
+	Name              string `json:"name"`
+	Document          string `json:"document"`
+	FirstName         string `json:"firstName"`
+	LastName          string `json:"lastName"`
+	DateOfBirth       string `json:"dateOfBirth"`
+	Email             string `json:"email"`
+	Phone             string `json:"phone"`
+	Fax               string `json:"fax"`
+	Website           string `json:"website"`
+	AccountHolderType string `json:"accountHolderType"`
 }

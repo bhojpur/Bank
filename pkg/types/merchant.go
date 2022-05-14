@@ -20,19 +20,23 @@ package types
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import (
-	"time"
-)
-
-type Cursor struct {
-	After  *string `json:"after"`
-	Before *string `json:"before"`
-	Limit  *int    `json:"limit"`
+// Merchant represents details of a merchant
+type Merchant struct {
+	ID              string `json:"merchantId"`
+	Name            string `json:"name"`
+	Website         string `json:"website"`
+	PhoneNumber     string `json:"phoneNumber"`
+	TwitterUsername string `json:"twitterUsername"`
 }
 
-// DateRange holds two dates that represent a range. It is typically
-// used when providing a range when querying the API.
-type DateRange struct {
-	From time.Time
-	To   time.Time
+// MerchantLocation represents details of a merchant location
+type MerchantLocation struct {
+	ID                       string `json:"merchantLocationId"`
+	MerchantID               string `json:"merchantId"`
+	MerchantName             string `json:"merchantName"`
+	LocationName             string `json:"locationName"`
+	Address                  string `json:"address"`
+	PhoneNumber              string `json:"phoneNumber"`
+	GooglePlaceID            string `json:"googlePlaceId"`
+	CardMerchantCategoryCode int32  `json:"cardMerchantCategoryCode"`
 }

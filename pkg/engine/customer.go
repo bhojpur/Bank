@@ -1,4 +1,4 @@
-package types
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -21,18 +21,29 @@ package types
 // THE SOFTWARE.
 
 import (
-	"time"
+	"fmt"
+
+	"github.com/bhojpur/bank/pkg/types"
 )
 
-type Cursor struct {
-	After  *string `json:"after"`
-	Before *string `json:"before"`
-	Limit  *int    `json:"limit"`
+// CustomerService handles communication with Bhojpur Bank API
+type CustomerService struct {
+	client *Client
 }
 
-// DateRange holds two dates that represent a range. It is typically
-// used when providing a range when querying the API.
-type DateRange struct {
-	From time.Time
-	To   time.Time
+// Get returns the Customer details for the current client.
+func (s *CustomerService) Get(id string) (*types.Customer, *Response, error) {
+	path := fmt.Sprintf("/v1/customers/%s", id)
+	req, err := s.client.NewAPIRequest("GET", path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var customer *types.Customer
+	resp, err := s.client.Do(req, &customer)
+	if err != nil {
+		return customer, resp, err
+	}
+
+	return customer, resp, nil
 }

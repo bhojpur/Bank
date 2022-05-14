@@ -27,11 +27,11 @@ import (
 
 type PaymentLink struct {
 	ID        string                `json:"id"`
-	Amount    int                   `json:"amount"`
+	Currency  string                `json:"currency"`
+	Amount    float64               `json:"amount"`
 	Checkouts []PaymentLinkCheckout `json:"checkouts"`
 	Closed    bool                  `json:"closed"`
 	Code      string                `json:"code"`
-	Currency  string                `json:"currency"`
 	Customer  PaymentLinkCustomer   `json:"customer"`
 	Items     []PaymentLinkItem     `json:"items"`
 	SessionID string                `json:"session_id"`
@@ -44,11 +44,11 @@ type PaymentLinkCheckout struct {
 	ID                          string                `json:"id"`
 	AcceptedMultiPaymentMethods []string              `json:"accepted_multi_payment_methods"`
 	AcceptedPaymentMethods      []string              `json:"accepted_payment_methods"`
-	Amount                      int                   `json:"amount"`
+	Currency                    string                `json:"currency"`
+	Amount                      float64               `json:"amount"`
 	BillingAddress              json.RawMessage       `json:"billing_address"`
 	BillingAddressEditable      bool                  `json:"billing_address_editable"`
 	CreditCard                  PaymentLinkCreditCard `json:"credit_card"`
-	Currency                    string                `json:"currency"`
 	Customer                    PaymentLinkCustomer   `json:"customer"`
 	CustomerEditable            bool                  `json:"customer_editable"`
 	ExpiresAt                   string                `json:"expires_at"`
@@ -89,14 +89,15 @@ type PaymentLinkCustomer struct {
 }
 
 type PaymentLinkItem struct {
-	ID          string `json:"id"`
-	Amount      int    `json:"amount"`
-	Description string `json:"description"`
-	Quantity    int    `json:"quantity"`
-	Status      string `json:"status"`
-	Type        string `json:"type"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
+	ID          string  `json:"id"`
+	Currency    string  `json:"currency"`
+	Amount      float64 `json:"amount"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
+	Status      string  `json:"status"`
+	Type        string  `json:"type"`
+	CreatedAt   string  `json:"created_at"`
+	UpdatedAt   string  `json:"updated_at"`
 }
 
 type PaymentLinkInput struct {
@@ -108,9 +109,10 @@ type PaymentLinkInput struct {
 }
 
 type PaymentLinkItemInput struct {
-	Amount      int    `json:"amount"`
-	Description string `json:"description"`
-	Quantity    int    `json:"quantity"`
+	Currency    string  `json:"currency"`
+	Amount      float64 `json:"amount"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
 }
 
 type PaymentLinkCustomerInput struct {
@@ -118,7 +120,8 @@ type PaymentLinkCustomerInput struct {
 }
 
 type PaymentLinkPaymentInput struct {
-	Amount        int                      `json:"amount"`
+	Currency      string                   `json:"currency"`
+	Amount        float64                  `json:"amount"`
 	PaymentMethod string                   `json:"payment_method"`
 	Checkout      PaymentLinkCheckoutInput `json:"checkout"`
 }

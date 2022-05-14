@@ -21,34 +21,36 @@ package types
 // THE SOFTWARE.
 
 type TransferInput struct {
-	AccountID   string `json:"account_id"`
-	Amount      int    `json:"amount,omitempty"`
-	Description string `json:"description,omitempty"`
-	ScheduledTo string `json:"scheduled_to,omitempty"`
-	Target      Target `json:"target,omitempty"`
+	AccountID   string  `json:"account_id"`
+	Currency    string  `json:"currency"`
+	Amount      float64 `json:"amount,omitempty"`
+	Description string  `json:"description,omitempty"`
+	ScheduledTo string  `json:"scheduled_to,omitempty"`
+	Target      Target  `json:"target,omitempty"`
 	Type        string
 }
 
 type Transfer struct {
-	ID                       string `json:"id,omitempty"`
-	Amount                   int    `json:"amount,omitempty"`
-	Fee                      int    `json:"fee,omitempty"`
-	Target                   Target `json:"target,omitempty"`
-	ApprovedAt               string `json:"approved_at,omitempty"`
-	CreatedAt                string `json:"created_at,omitempty"`
-	RejectedAt               string `json:"rejected_at,omitempty"`
-	FailedAt                 string `json:"failed_at,omitempty"`
-	FailureReasonCode        string `json:"failure_reason_code,omitempty"`
-	FailureReasonDescription string `json:"failure_reason_description,omitempty"`
-	Status                   string `json:"status,omitempty"`
-	Description              string `json:"description,omitempty"`
-	ApprovedBy               string `json:"approved_by,omitempty"`
-	CreatedBy                string `json:"created_by,omitempty"`
-	RejectedBy               string `json:"rejected_by,omitempty"`
-	ApprovalExpiredAt        string `json:"approval_expired_at,omitempty"`
-	CancelledAt              string `json:"cancelled_at,omitempty"`
-	FinishedAt               string `json:"finished_at,omitempty"`
-	ScheduledTo              string `json:"scheduled_to,omitempty"`
+	ID                       string  `json:"id,omitempty"`
+	Currency                 string  `json:"currency"`
+	Amount                   float64 `json:"amount,omitempty"`
+	Fee                      int     `json:"fee,omitempty"`
+	Target                   Target  `json:"target,omitempty"`
+	ApprovedAt               string  `json:"approved_at,omitempty"`
+	CreatedAt                string  `json:"created_at,omitempty"`
+	RejectedAt               string  `json:"rejected_at,omitempty"`
+	FailedAt                 string  `json:"failed_at,omitempty"`
+	FailureReasonCode        string  `json:"failure_reason_code,omitempty"`
+	FailureReasonDescription string  `json:"failure_reason_description,omitempty"`
+	Status                   string  `json:"status,omitempty"`
+	Description              string  `json:"description,omitempty"`
+	ApprovedBy               string  `json:"approved_by,omitempty"`
+	CreatedBy                string  `json:"created_by,omitempty"`
+	RejectedBy               string  `json:"rejected_by,omitempty"`
+	ApprovalExpiredAt        string  `json:"approval_expired_at,omitempty"`
+	CancelledAt              string  `json:"cancelled_at,omitempty"`
+	FinishedAt               string  `json:"finished_at,omitempty"`
+	ScheduledTo              string  `json:"scheduled_to,omitempty"`
 
 	RefundedAt               string
 	RefundReasonCode         string `json:"refund_reason_code,omitempty"`

@@ -1,4 +1,4 @@
-package types
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -21,18 +21,24 @@ package types
 // THE SOFTWARE.
 
 import (
-	"time"
+	"fmt"
+
+	"github.com/bhojpur/bank/pkg/types"
 )
 
-type Cursor struct {
-	After  *string `json:"after"`
-	Before *string `json:"before"`
-	Limit  *int    `json:"limit"`
+// ReceiptService handles communication with Bhojpur Bank API
+type ReceiptService struct {
+	client *Client
 }
 
-// DateRange holds two dates that represent a range. It is typically
-// used when providing a range when querying the API.
-type DateRange struct {
-	From time.Time
-	To   time.Time
+// CreateCardReceipt creates a receipt for a given Payment Card transaction.
+func (s *ReceiptService) CreateCardReceipt(txnID string, r types.Receipt) (*Response, error) {
+	path := fmt.Sprintf("/v1/transactions/card/%s/receipt", txnID)
+	req, err := s.client.NewAPIRequest("POST", path, r)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	return resp, err
 }
