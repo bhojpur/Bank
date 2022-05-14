@@ -1,4 +1,4 @@
-package cmd
+package types
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -20,22 +20,11 @@ package cmd
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import (
-	"fmt"
+import "gopkg.in/square/go-jose.v2"
 
-	"github.com/bhojpur/bank/pkg/version"
-	"github.com/spf13/cobra"
-)
+// BhojpurPublicKeys holds JWK keys by kid (RFC 7517)
+type BhojpurPublicKeys map[string]*jose.JSONWebKey
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the version of this Bhojpur Bank executable binary image",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("banksvr " + version.FullVersion())
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(versionCmd)
+func (b BhojpurPublicKeys) Get(key string) *jose.JSONWebKey {
+	return b[key]
 }

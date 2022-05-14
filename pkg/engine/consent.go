@@ -1,4 +1,4 @@
-package cmd
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -22,20 +22,44 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
-	"github.com/bhojpur/bank/pkg/version"
-	"github.com/spf13/cobra"
+	jwt "github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the version of this Bhojpur Bank executable binary image",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("banksvr " + version.FullVersion())
-	},
+func (c *Client) ConsentLink(sessionID string) (string, error) {
+	claims := c.consentClaims(sessionID)
+	tokenString, err := c.generateToken(claims)
+	if err != nil {
+		return "", err
+	}
+
+	pathURL := fmt.Sprintf("/consentimento?client_id=%s&jwt=%s", c.ClientID, tokenString)
+	u, err := c.SiteURL.Parse(pathURL)
+	if err != nil {
+		return "", err
+	}
+
+	return u.String(), nil
 }
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
+func (c *Client) consentClaims(sessionID string) jwt.MapClaims {
+	now := time.Now()
+	if sessionID == "" {
+		sessionID = uuid.New().String()
+	}
+	claims := jwt.MapClaims{
+		"aud":              "accounts-hubid@bank.bhojpur.net",
+		"client_id":        c.ClientID,
+		"exp":              now.Add(time.Hour * time.Duration(2)).Unix(),
+		"iat":              now.Unix(),
+		"iss":              c.ClientID,
+		"jti":              sessionID,
+		"nbf":              now.Unix(),
+		"redirect_uri":     c.ConsentRedirectURL,
+		"session_metadata": map[string]string{"client_session": sessionID},
+		"type":             "consent",
+	}
+	return claims
 }

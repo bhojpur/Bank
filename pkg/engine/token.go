@@ -1,4 +1,4 @@
-package cmd
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -21,21 +21,14 @@ package cmd
 // THE SOFTWARE.
 
 import (
-	"fmt"
-
-	"github.com/bhojpur/bank/pkg/version"
-	"github.com/spf13/cobra"
+	jwt "github.com/golang-jwt/jwt/v4"
 )
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the version of this Bhojpur Bank executable binary image",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("banksvr " + version.FullVersion())
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(versionCmd)
+func (c *Client) generateToken(claims jwt.MapClaims) (string, error) {
+	t := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
+	tokenString, err := t.SignedString(c.privateKey)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, err
 }

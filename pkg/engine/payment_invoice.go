@@ -1,0 +1,128 @@
+package engine
+
+// Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+import (
+	"errors"
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.com/bhojpur/bank/pkg/types"
+)
+
+// PaymentInvoiceService handlers communication with Bhojpur Bank API
+type PaymentInvoiceService struct {
+	client *Client
+}
+
+// PaymentInvoice make a bar code payment invoice
+func (s *PaymentInvoiceService) PaymentInvoice(input types.PaymentInvoiceInput, idempotencyKey string) (*types.PaymentInvoice, *Response, error) {
+	path := "/v1/barcode_payment_invoices"
+	if err := input.Validate(); err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewAPIRequest(http.MethodPost, path, input)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	err = s.client.AddIdempotencyHeader(req, idempotencyKey)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var paymentInvoice types.PaymentInvoice
+	resp, err := s.client.Do(req, &paymentInvoice)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &paymentInvoice, resp, err
+}
+
+// List returns a list of PaymentInvoices
+func (s *PaymentInvoiceService) List(accountID string) ([]types.PaymentInvoice, *Response, error) {
+	path := fmt.Sprintf("/v1/barcode_payment_invoices/?account_id=%s", accountID)
+	if strings.TrimSpace(accountID) == "" {
+		return nil, nil, errors.New("account_id can't be empty")
+	}
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var dataResp struct {
+		Cursor types.Cursor           `json:"cursor"`
+		Data   []types.PaymentInvoice `json:"data"`
+	}
+
+	resp, err := s.client.Do(req, &dataResp)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return dataResp.Data, resp, err
+}
+
+// Get return a PaymentInvoice
+func (s *PaymentInvoiceService) Get(paymentInvoiceID string) (types.PaymentInvoice, *Response, error) {
+	path := fmt.Sprintf("/v1/barcode_payment_invoices/%s", paymentInvoiceID)
+	var paymentInvoice types.PaymentInvoice
+	if strings.TrimSpace(paymentInvoiceID) == "" {
+		return paymentInvoice, nil, errors.New("payment_invoice_id can't be empty")
+	}
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return paymentInvoice, nil, err
+	}
+
+	resp, err := s.client.Do(req, &paymentInvoice)
+	if err != nil {
+		return paymentInvoice, resp, err
+	}
+
+	return paymentInvoice, resp, err
+}
+
+func (s *PaymentInvoiceService) Cancel(paymentInvoiceID string) (*Response, error) {
+	paymentInvoiceID = strings.TrimSpace(paymentInvoiceID)
+	if paymentInvoiceID == "" {
+		return nil, errors.New("payment_invoice_id can't be empty")
+	}
+
+	path := fmt.Sprintf("/v1/barcode_payment_invoices/%s/cancel", paymentInvoiceID)
+
+	req, err := s.client.NewAPIRequest(http.MethodPost, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}

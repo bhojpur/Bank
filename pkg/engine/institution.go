@@ -1,4 +1,4 @@
-package cmd
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -22,20 +22,57 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 
-	"github.com/bhojpur/bank/pkg/version"
-	"github.com/spf13/cobra"
+	"github.com/bhojpur/bank/pkg/types"
 )
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the version of this Bhojpur Bank executable binary image",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("banksvr " + version.FullVersion())
-	},
+type InstitutionService struct {
+	client *Client
 }
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
+type InstitutionContext string
+
+const (
+	AllInstitutions InstitutionContext = "all"
+	SPIParticipants InstitutionContext = "spi"
+	STRParticipants InstitutionContext = "str"
+)
+
+// Get institution info
+func (s InstitutionService) Get(context string) (*types.Institution, *Response, error) {
+
+	path := fmt.Sprintf("/v1/institutions/%s", context)
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var institution types.Institution
+	resp, err := s.client.Do(req, &institution)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &institution, resp, err
+}
+
+// List institutions
+func (s InstitutionService) List(context InstitutionContext) ([]types.Institution, *Response, error) {
+
+	path := fmt.Sprintf("/v1/institutions?context=%s", context)
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var institution []types.Institution
+	resp, err := s.client.Do(req, &institution)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return institution, resp, err
 }

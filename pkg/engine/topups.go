@@ -1,4 +1,4 @@
-package cmd
+package engine
 
 // Copyright (c) 2018 Bhojpur Consulting Private Limited, India. All rights reserved.
 
@@ -22,20 +22,48 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 
-	"github.com/bhojpur/bank/pkg/version"
-	"github.com/spf13/cobra"
+	"github.com/bhojpur/bank/pkg/types"
 )
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the version of this Bhojpur Bank executable binary image",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("banksvr " + version.FullVersion())
-	},
+// TopupsService handles communication with Bhojpur Bank API
+type TopupsService struct {
+	client *Client
 }
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
+// ListGameProviders list all game providers
+func (s *TopupsService) ListGameProviders() (*types.Providers, *Response, error) {
+	const path = "/v1/topups/games/providers"
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var providers types.Providers
+	resp, err := s.client.Do(req, &providers)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &providers, resp, err
+}
+
+// GetValuesFromGameProvider list all values from a game provider
+func (s *TopupsService) GetValuesFromGameProvider(id int) (*types.Products, *Response, error) {
+	path := fmt.Sprintf("/v1/topups/games/values/%v", id)
+
+	req, err := s.client.NewAPIRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var products types.Products
+	resp, err := s.client.Do(req, &products)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &products, resp, err
 }
